@@ -17,7 +17,7 @@ namespace Lab12_PH00000.Controllers
         {
             // ViewBag/Viewdata được sử dụng để truyền dữ liệu từ controller sang View nhưng phạm vi sử dụng
             // chỉ nằm trong View ứng với Action
-            // Vòng đời của Viewbag/Viewdata cũng chỉ nằm trong 1 Request duy nhất
+            // Vòng đời của Viewbag/Viewdata cũng chỉ nằm trong 1 Request duy nhất, còn temp data là giữa 2 request
             // ViewBag là dạng dữ liệu dynamic Object
             // ViewData se giống tempData theo cơ chế key-value
             // tương tự như tempdata, ta cũng có thể gọi dữ liệu trực tiếp từ ViewBag Viewdata với @
