@@ -56,7 +56,6 @@ namespace Lab12_PH00000.Controllers
                     sqlConnection.Close(); // đóng kết nối
                 }
             }
-
             return View();
         }
     }
