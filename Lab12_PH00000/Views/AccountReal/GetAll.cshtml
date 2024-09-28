@@ -1,0 +1,7 @@
+﻿@model List<Lab12_PH00000.Models.Account> 
+
+@foreach(var item in Model){
+    <div>
+        <h4>username: @item.Username, password: @item.Password, Role: @item.Role</h4>
+    </div>
+}

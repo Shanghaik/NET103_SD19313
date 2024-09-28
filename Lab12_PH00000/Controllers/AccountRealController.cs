@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Lab12_PH00000.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
 namespace Lab12_PH00000.Controllers
@@ -39,8 +40,8 @@ namespace Lab12_PH00000.Controllers
                     var row = cmd.ExecuteScalar();
                     if (row != null) // có dữ liệu, login thành công
                     {
-                        TempData["message"]="Bạn đã đăng nhập thành công với username " + row.ToString();
-                        return RedirectToAction("Index", "Hame"); 
+                        TempData["message"] = "Bạn đã đăng nhập thành công với username " + row.ToString();
+                        return RedirectToAction("Index", "Hame");
                     }
                     else
                     {
@@ -57,6 +58,58 @@ namespace Lab12_PH00000.Controllers
                 }
             }
             return View();
+        }
+        public IActionResult SignUp(string username, string password, string repassword, int role)
+        {
+            if (password != repassword)
+            {
+                return Content("Mật khẩu nhập chưa trùng nhau? Bạn có bị hoa mắt không?");
+            }
+            string query = $"insert into account values ('{username}', '{password}', {role})";
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
+            // Tạo command để chạy
+            SqlCommand cmd = new SqlCommand(query, sqlConnection);
+            try
+            {
+                sqlConnection.Open();
+                int rowAffected = cmd.ExecuteNonQuery(); // Trả về số dòng bị tác động tới
+                if (rowAffected == 1)
+                {
+                    return Redirect(@"~/AccountReal/Login");
+                }
+                else return Content("Tạo mới tài khoản thất bại");
+            }
+            catch (Exception e)
+            {
+                Content(e.Message);
+            }
+            return View();
+        }
+        // Show ra toàn bộ danh sách Khi mà login với tài khoản admin (Role = 1)
+        public IActionResult GetAll(int role)
+        {
+            if (role != 1) return BadRequest("Bản không đủ thẩm quyền để vào trang này");
+            else
+            {
+                string query = "select * from Account";
+                SqlConnection sqlConnection = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand(query, sqlConnection);
+                sqlConnection.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                List<Account> list = new List<Account>();
+                while (reader.Read()) // Đọc từng dòng
+                {
+                    Account ac = new Account() // Tạo 1 đối tượng mới từ dữ liệu thu được
+                    {
+                        Username = reader.GetString(0),
+                        Password = reader.GetString(1),
+                        Role = reader.GetInt32(2)
+                    };
+                    list.Add(ac); // Add đối tượng vừa lấy ra được vào list
+                }
+                sqlConnection.Close();
+                return View(list);  
+            }
         }
     }
 }

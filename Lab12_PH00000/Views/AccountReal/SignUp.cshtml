@@ -1,0 +1,31 @@
+﻿<h3>Xin chào tôi là view Login</h3>
+
+@{
+    ViewData["Title"] = "SignUp";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="post" asp-action="SignUp" asp-controller="AccountReal">
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="password">Nhập lại Password</label>
+        <input type="password" id="repassword" name="repassword" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="password">Nhập trạng thái</label>
+        <input type="number" id="role" name="role" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">SignUp</button>
+</form>
+
+<div>
+    <a href="/Account/GoHome">Quay trở lại trang chủ</a>
+</div>
