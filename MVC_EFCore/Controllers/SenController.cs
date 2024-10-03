@@ -22,7 +22,8 @@ namespace MVC_EFCore.Controllers
         // GET: SenController/Details/5
         public ActionResult Details(int id) // Template Details
         {
-            return View();
+            var item = _context.Sens.Find(id);
+            return View(item);
         }
 
         // GET: SenController/Create
