@@ -6,17 +6,17 @@ namespace MVC_EFCore.Controllers
 {
     public class SenController : Controller
     {
-        PET2Context context;
+        PET2Context _context; // Tạo context
         public SenController()
         {
-            context= new PET2Context();
+            _context = new PET2Context(); // Khởi tạo context trong constructor
         }
         // GET: SenController
         // Trước khi Gen View nhớ Build lại Project
         public ActionResult Index() // Gen View GetAll - Dạng Template List model là Sen
         {
-            var sen = context.Sens.ToList();
-            return View(sen);
+            var sen = _context.Sens.ToList(); // Lấy cả List
+            return View(sen); // Truyền vào View
         }
 
         // GET: SenController/Details/5
