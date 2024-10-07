@@ -28,7 +28,7 @@ namespace MVC_EFCore
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Sen}/{action=Index}");
 
             app.Run();
         }

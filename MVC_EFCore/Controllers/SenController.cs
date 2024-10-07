@@ -27,66 +27,88 @@ namespace MVC_EFCore.Controllers
         }
 
         // GET: SenController/Create
-        public ActionResult Create()
+        public ActionResult Create() // Form này chỉ để mở ra giao diện cho phép nhập
         {
-            return View();
+            Sen dataMau = new Sen()
+            {
+                Ten = "Quà tặng cột sống",
+                DiaChi = "Đốt sống lưng thứ 13",
+                Sdt = "1234"
+            };
+            return View(dataMau);
         }
-
         // POST: SenController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        [HttpPost] 
+        public ActionResult Create(Sen sen) // 
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                _context.Sens.Add(sen); _context.SaveChanges();
+                return RedirectToAction("Index");
             }
-            catch
+            catch(Exception e)
             {
-                return View();
+                return Content(e.Message);
             }
         }
-
+        // Action Result cho phép 1 action trả về Result (JsonResult, ContentResult, Status, ViewResult...)
         // GET: SenController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var editItem = _context.Sens.Find(id);
+            return View(editItem);
         }
 
         // POST: SenController/Edit/5
+        //[HttpPost]
+        //public ActionResult Edit(Sen sen)
+        //{
+        //    try
+        //    {
+        //        _context.Update(sen);
+        //        _context.SaveChanges(); 
+        //        return RedirectToAction("Index");
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Content(e.Message);
+        //    }
+        //}
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Sen sen, int id)
         {
+            var editItem = _context.Sens.FirstOrDefault(x => x.Id == id);
+            // var editItem2 = _context.Sens.SingleOrDefault(x => x.Id == id);
+            // Cả first và single đều trả về default nếu không tìm thấy dữ liệu
+            // Nếu có dữ liệu thì First trả về đối tượng đầu tiên map với điều kiện trong th nhiều
+            // Single quang ra exception nếu có nhiều đối tượng map với điều kiện
             try
             {
-                return RedirectToAction(nameof(Index));
+                editItem.Ten = sen.Ten;
+                editItem.Sdt = sen.Sdt;
+                editItem.DiaChi = sen.DiaChi;   
+                // _context.Update(sen);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
             }
-            catch
+            catch (Exception e)
             {
-                return View();
+                return Content(e.Message);
             }
         }
-
+        // Lý do số 1: Chúng tư dử sụng @model cho View cho nên View
+        // nhận diện trực tiếp được model
+        // Lý do thứ 2: (Bổ sung cho 1) chúng ta sử dụng EntityFramework core có tính Tracking (theo dõi)
+        // nên khi ta thao tác trên 1 model của View thực chất chính là model trong database 
         // GET: SenController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var deleteItem = _context.Sens.Find(id);
+            _context.Sens.Remove(deleteItem);   
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
 
-        // POST: SenController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        
     }
 }
