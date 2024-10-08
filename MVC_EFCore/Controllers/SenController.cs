@@ -118,7 +118,7 @@ namespace MVC_EFCore.Controllers
             var sessionData = HttpContext.Session.GetString("deleted");
             if (String.IsNullOrEmpty(sessionData))
             {
-                return Content("Không có đối tượng anof vừa bị xóa");
+                return Content("Không có đối tượng nào vừa bị xóa");
             }else
             {
                 Sen sen = JsonConvert.DeserializeObject<Sen>(sessionData);  // Tạo ra đối tượng từ dữ liệu
