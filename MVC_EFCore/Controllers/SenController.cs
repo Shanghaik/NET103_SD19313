@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MVC_EFCore.Models;
+using Newtonsoft.Json;
 
 namespace MVC_EFCore.Controllers
 {
@@ -59,14 +60,14 @@ namespace MVC_EFCore.Controllers
             return View(editItem);
         }
 
-        // POST: SenController/Edit/5
+        //// POST: SenController/Edit/5
         //[HttpPost]
         //public ActionResult Edit(Sen sen)
         //{
         //    try
         //    {
         //        _context.Update(sen);
-        //        _context.SaveChanges(); 
+        //        _context.SaveChanges();
         //        return RedirectToAction("Index");
         //    }
         //    catch (Exception e)
@@ -87,7 +88,7 @@ namespace MVC_EFCore.Controllers
                 editItem.Ten = sen.Ten;
                 editItem.Sdt = sen.Sdt;
                 editItem.DiaChi = sen.DiaChi;   
-                // _context.Update(sen);
+                _context.Update(editItem);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -104,9 +105,36 @@ namespace MVC_EFCore.Controllers
         public ActionResult Delete(int id)
         {
             var deleteItem = _context.Sens.Find(id);
+            // Biến dữ liệu cần xóa thành string để đưa vào trong Session
+            string jsonData = JsonConvert.SerializeObject(deleteItem);
+            // add data đó vào trong Session
+            HttpContext.Session.SetString("deleted", jsonData);
             _context.Sens.Remove(deleteItem);   
             _context.SaveChanges();
             return RedirectToAction("Index");
+        }
+        public ActionResult RollBack()
+        {
+            var sessionData = HttpContext.Session.GetString("deleted");
+            if (String.IsNullOrEmpty(sessionData))
+            {
+                return Content("Không có đối tượng anof vừa bị xóa");
+            }else
+            {
+                Sen sen = JsonConvert.DeserializeObject<Sen>(sessionData);  // Tạo ra đối tượng từ dữ liệu
+                Sen newSen = new Sen()
+                {
+                    Ten = sen.Ten,
+                    Sdt = sen.Sdt,
+                    DiaChi = sen.DiaChi
+                };
+                // Vì ID của Sen trong db là identity nên đối tượng đã bị xóa vẫn làm tăng id khi thêm nên
+                // ta phải tạo ra đối tượng mới, nếu thuộc tính id không phải identity thì ko cần tạo mới
+                _context.Sens.Add(newSen);
+                _context.SaveChanges();
+                HttpContext.Session.Remove("deleted"); // xóa dữ liệu đó đi sau khi đa rollback
+                return RedirectToAction("Index");
+            }
         }
 
         
